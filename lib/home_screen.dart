@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'database_helper.dart';
+import 'api_client.dart';
 
 class HomeScreen extends StatelessWidget {
   final String userId;
   final dbHelper = DatabaseHelper();
+  final finnhubClient = FinnhubApiClient();
 
   HomeScreen({required this.userId});
 
@@ -46,22 +48,39 @@ class HomeScreen extends StatelessWidget {
                     return Center(child: Text("No stocks in your watchlist."));
                   } else {
                     return ListView(
-                      children: snapshot.data!
-                          .map(
-                            (stock) => ListTile(
-                              title: Text(stock),
-                              trailing: IconButton(
-                                icon: Icon(Icons.delete),
-                                onPressed: () async {
-                                  await dbHelper.removeFromWatchlist(userId, stock);
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text("$stock removed from watchlist")),
-                                  );
-                                },
-                              ),
-                            ),
-                          )
-                          .toList(),
+                      children: snapshot.data!.map((stock) {
+                        return FutureBuilder<Map<String, dynamic>>(
+                          future: finnhubClient.fetchStockQuote(stock),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return ListTile(
+                                title: Text(stock),
+                                subtitle: Text("Loading..."),
+                              );
+                            } else if (snapshot.hasError) {
+                              return ListTile(
+                                title: Text(stock),
+                                subtitle: Text("Error loading data"),
+                              );
+                            } else {
+                              final data = snapshot.data!;
+                              return ListTile(
+                                title: Text(stock),
+                                subtitle: Text("Current Price: \$${data['c']}"),
+                                trailing: IconButton(
+                                  icon: Icon(Icons.delete),
+                                  onPressed: () async {
+                                    await dbHelper.removeFromWatchlist(userId, stock);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text("$stock removed from watchlist")),
+                                    );
+                                  },
+                                ),
+                              );
+                            }
+                          },
+                        );
+                      }).toList(),
                     );
                   }
                 },
