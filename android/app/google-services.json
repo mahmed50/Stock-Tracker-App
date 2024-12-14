@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "695235113733",
+    "project_id": "stock-tracker-app-b0df4",
+    "storage_bucket": "stock-tracker-app-b0df4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:695235113733:android:f0179847d5d42863803d6c",
+        "android_client_info": {
+          "package_name": "com.stocktracker.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSsSpz5vqQc5IlZ5wW74GRx0aiuVGYOjc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:695235113733:android:20a48f95ec171368803d6c",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSsSpz5vqQc5IlZ5wW74GRx0aiuVGYOjc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
