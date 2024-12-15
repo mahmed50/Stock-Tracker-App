@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'database_helper.dart';
-import 'api_client.dart';
+import '../database_helper.dart';
+import '../api_client.dart';
 
 class HomeScreen extends StatelessWidget {
   final String userId;

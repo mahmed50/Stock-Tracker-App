@@ -17,7 +17,11 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Home"),
+        backgroundColor: Colors.green[800],
+        title: Text(
+          "Stock Tracker",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.logout),
@@ -35,7 +39,11 @@ class HomeScreen extends StatelessWidget {
           children: [
             Text(
               "Major Stocks",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Colors.green[900],
+              ),
             ),
             SizedBox(height: 10),
             Expanded(
@@ -45,28 +53,49 @@ class HomeScreen extends StatelessWidget {
                     future: finnhubClient.fetchStockQuote(stock),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return ListTile(
-                          title: Text(stock),
-                          subtitle: Text("Loading..."),
+                        return Card(
+                          elevation: 2,
+                          child: ListTile(
+                            title: Text(stock),
+                            subtitle: Text("Loading..."),
+                          ),
                         );
                       } else if (snapshot.hasError) {
-                        return ListTile(
-                          title: Text(stock),
-                          subtitle: Text("Error loading data"),
+                        return Card(
+                          elevation: 2,
+                          child: ListTile(
+                            title: Text(stock),
+                            subtitle: Text("Error loading data"),
+                          ),
                         );
                       } else {
                         final data = snapshot.data!;
-                        return ListTile(
-                          title: Text(stock),
-                          subtitle: Text("Current Price: \$${data['c']}"),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => StockDetailsScreen(stockSymbol: stock),
-                              ),
-                            );
-                          },
+                        return Card(
+                          elevation: 4,
+                          margin: EdgeInsets.symmetric(vertical: 8),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: ListTile(
+                            title: Text(
+                              stock,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: Text(
+                              "Current Price: \$${data['c']}",
+                              style: TextStyle(color: Colors.green[700]),
+                            ),
+                            trailing: Icon(Icons.arrow_forward_ios),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      StockDetailsScreen(stockSymbol: stock),
+                                ),
+                              );
+                            },
+                          ),
                         );
                       }
                     },
@@ -76,6 +105,12 @@ class HomeScreen extends StatelessWidget {
             ),
             SizedBox(height: 20),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 165, 212, 168),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -84,7 +119,10 @@ class HomeScreen extends StatelessWidget {
                   ),
                 );
               },
-              child: Text("View Watchlist"),
+              child: Text(
+                "View Watchlist",
+                style: TextStyle(fontSize: 18),
+              ),
             ),
           ],
         ),
