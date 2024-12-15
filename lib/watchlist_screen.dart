@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'database_helper.dart';
 import 'api_client.dart';
+import 'stock_details_screen.dart';
 
 class WatchlistScreen extends StatelessWidget {
   final String userId;
@@ -47,15 +48,14 @@ class WatchlistScreen extends StatelessWidget {
                         return ListTile(
                           title: Text(stock),
                           subtitle: Text("Current Price: \$${data['c']}"),
-                          trailing: IconButton(
-                            icon: Icon(Icons.delete),
-                            onPressed: () async {
-                              await dbHelper.removeFromWatchlist(userId, stock);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text("$stock removed from watchlist")),
-                              );
-                            },
-                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => StockDetailsScreen(stockSymbol: stock),
+                              ),
+                            );
+                          },
                         );
                       }
                     },

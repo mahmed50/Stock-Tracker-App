@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'database_helper.dart';
 import 'api_client.dart';
+import 'stock_details_screen.dart';
 import 'watchlist_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -58,6 +59,14 @@ class HomeScreen extends StatelessWidget {
                         return ListTile(
                           title: Text(stock),
                           subtitle: Text("Current Price: \$${data['c']}"),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => StockDetailsScreen(stockSymbol: stock),
+                              ),
+                            );
+                          },
                         );
                       }
                     },
