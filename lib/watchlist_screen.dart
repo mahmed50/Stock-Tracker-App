@@ -15,6 +15,7 @@ class WatchlistScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Your Watchlist"),
+        backgroundColor: Colors.green[800],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -26,7 +27,12 @@ class WatchlistScreen extends StatelessWidget {
             } else if (snapshot.hasError) {
               return Center(child: Text("Error: ${snapshot.error}"));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return Center(child: Text("No stocks in your watchlist."));
+              return Center(
+                child: Text(
+                  "No stocks in your watchlist.",
+                  style: TextStyle(fontSize: 18, color: Colors.grey),
+                ),
+              );
             } else {
               return ListView(
                 children: snapshot.data!.map((stock) {
@@ -34,28 +40,51 @@ class WatchlistScreen extends StatelessWidget {
                     future: finnhubClient.fetchStockQuote(stock),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return ListTile(
-                          title: Text(stock),
-                          subtitle: Text("Loading..."),
+                        return Card(
+                          elevation: 2,
+                          child: ListTile(
+                            title: Text(stock),
+                            subtitle: Text("Loading..."),
+                          ),
                         );
                       } else if (snapshot.hasError) {
-                        return ListTile(
-                          title: Text(stock),
-                          subtitle: Text("Error loading data"),
+                        return Card(
+                          elevation: 2,
+                          child: ListTile(
+                            title: Text(stock),
+                            subtitle: Text("Error loading data"),
+                          ),
                         );
                       } else {
                         final data = snapshot.data!;
-                        return ListTile(
-                          title: Text(stock),
-                          subtitle: Text("Current Price: \$${data['c']}"),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => StockDetailsScreen(stockSymbol: stock),
-                              ),
-                            );
-                          },
+                        return Card(
+                          elevation: 4,
+                          margin: EdgeInsets.symmetric(vertical: 8),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: ListTile(
+                            title: Text(
+                              stock,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: Text(
+                              "Current Price: \$${data['c']}",
+                              style: TextStyle(color: Colors.green[700]),
+                            ),
+                            trailing: IconButton(
+                              icon: Icon(Icons.delete, color: Colors.red),
+                              onPressed: () => _confirmDelete(context, stock),
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => StockDetailsScreen(stockSymbol: stock),
+                                ),
+                              );
+                            },
+                          ),
                         );
                       }
                     },
@@ -67,6 +96,7 @@ class WatchlistScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.green[800],
         onPressed: () {
           _addStockToWatchlist(context);
         },
@@ -103,6 +133,32 @@ class WatchlistScreen extends StatelessWidget {
               }
             },
             child: Text("Add"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _confirmDelete(BuildContext context, String stock) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Confirm Delete"),
+        content: Text("Are you sure you want to delete $stock from your watchlist?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context), // Close dialog
+            child: Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () async {
+              await dbHelper.removeFromWatchlist(userId, stock);
+              Navigator.pop(context); // Close dialog
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("$stock removed from watchlist")),
+              );
+            },
+            child: Text("Delete", style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
