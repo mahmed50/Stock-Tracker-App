@@ -25,7 +25,6 @@ class FinnhubApiClient {
   }
 
 
-
   // Fetch company profile for a given symbol
   Future<Map<String, dynamic>> fetchCompanyProfile(String symbol) async {
     try {
